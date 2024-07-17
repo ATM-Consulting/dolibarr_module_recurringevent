@@ -18,7 +18,7 @@
 require 'config.php';
 dol_include_once('recurringevent/class/recurringevent.class.php');
 
-if(empty($user->rights->recurringevent->read)) accessforbidden();
+if(empty($user->hasRight('recurringevent', 'read'))) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('recurringevent@recurringevent');
@@ -65,7 +65,7 @@ if (empty($reshook))
 llxHeader('', $langs->trans('RecurringEventList'), '', '');
 
 //$type = GETPOST('type');
-//if (empty($user->rights->recurringevent->all->read)) $type = 'mine';
+//if (empty($user->hasRight('recurringevent', 'all', 'read'))) $type = 'mine';
 
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
