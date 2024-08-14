@@ -163,6 +163,8 @@ class InterfaceRecurringEventtrigger
                 $recurringEvent->actioncomm_datep = $object->datep;
                 $recurringEvent->actioncomm_datef = $object->datef;
 
+				$recurringEvent->weekday_repeat = json_encode($recurringEvent->weekday_repeat);
+
 //var_dump($recurringEvent->weekday_repeat);exit;
                 $recurringEvent->save($user);
             }

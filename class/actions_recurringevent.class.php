@@ -127,34 +127,34 @@ class ActionsRecurringEvent
                             <legend class="col-form-label col-sm-2 pt-0">'.$langs->trans('RecurringEventRepeatThe').'</legend>
                             <div class="col-sm-3">
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(1, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(1, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1">
                                     <label class="custom-control-label" for="customCheckLun">'.$langs->trans('RecurringEventMondayShort').'</label>
                                 </div>
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(2, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(2, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2">
                                     <label class="custom-control-label" for="customCheckMar">'.$langs->trans('RecurringEventTuesdayShort').'</label>
                                 </div>
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(3, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(3, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3">
                                     <label class="custom-control-label" for="customCheckMer">'.$langs->trans('RecurringEventWednesdayShort').'</label>
                                 </div>
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(4, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(4, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4">
                                     <label class="custom-control-label" for="customCheckJeu">'.$langs->trans('RecurringEventThursdayShort').'</label>
                                 </div>
                             </div>
 
                             <div class="col-sm-3">
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(5, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(5, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5">
                                     <label class="custom-control-label" for="customCheckVen">'.$langs->trans('RecurringEventFridayShort').'</label>
                                 </div>
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(6, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(6, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6">
                                     <label class="custom-control-label" for="customCheckSam">'.$langs->trans('RecurringEventSaturdayShort').'</label>
                                 </div>
                                 <div class="form-check custom-control custom-checkbox">
-                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(0, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0">
+                                    <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(0, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0">
                                     <label class="custom-control-label" for="customCheckDim">'.$langs->trans('RecurringEventSundayShort').'</label>
                                 </div>
                             </div>
@@ -226,34 +226,34 @@ class ActionsRecurringEvent
                     <td id="" class="" colspan="3">
                         <div class="pull-left minwidth100">
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(1, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(1, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1">
                                 <label class="custom-control-label" for="customCheckLun">'.$langs->trans('RecurringEventMondayShort').'</label>
                             </div>
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(2, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(2, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2">
                                 <label class="custom-control-label" for="customCheckMar">'.$langs->trans('RecurringEventTuesdayShort').'</label>
                             </div>
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(3, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(3, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3">
                                 <label class="custom-control-label" for="customCheckMer">'.$langs->trans('RecurringEventWednesdayShort').'</label>
                             </div>
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(4, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(4, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4">
                                 <label class="custom-control-label" for="customCheckJeu">'.$langs->trans('RecurringEventThursdayShort').'</label>
                             </div>
                         </div>
 
                         <div class="pull-left minwidth100">
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(5, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(5, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5">
                                 <label class="custom-control-label" for="customCheckVen">'.$langs->trans('RecurringEventFridayShort').'</label>
                             </div>
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(6, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(6, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6">
                                 <label class="custom-control-label" for="customCheckSam">'.$langs->trans('RecurringEventSaturdayShort').'</label>
                             </div>
                             <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(0, (array) $recurringEvent->weekday_repeat) ? 'checked' : '').' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0">
+                                <input type="checkbox" '.(!empty($recurringEvent->id) && in_array(0, (array) json_decode($recurringEvent->weekday_repeat)) ? 'checked' : '').' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0">
                                 <label class="custom-control-label" for="customCheckDim">'.$langs->trans('RecurringEventSundayShort').'</label>
                             </div>
                         </div>
