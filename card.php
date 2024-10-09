@@ -395,6 +395,53 @@ else
     }
 }
 
+?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const resetButton = document.createElement('button');
+    resetButton.type = 'button';
+    resetButton.className = 'button reset-recurrence';
+    resetButton.textContent = '<?php echo $langs->trans('ResetRecurrence'); ?>';
+
+    // Ajouter le bouton après le bouton de sauvegarde
+    const saveButton = form.querySelector('input[name="save"]');
+    saveButton.parentNode.insertBefore(resetButton, saveButton.nextSibling);
+    
+    resetButton.addEventListener('click', function() {
+        const frequencyUnitSelect = document.getElementById('frequency_unit');
+        const dateInput = document.getElementById('end_date');
+        
+        const selectedUnit = frequencyUnitSelect.value;
+        const today = new Date();
+        let defaultDate;
+
+        switch(selectedUnit) {
+            case 'day':
+                defaultDate = today;
+                break;
+            case 'week':
+                const nextMonday = new Date();
+                nextMonday.setDate(today.getDate() + ((1 + 7 - today.getDay()) % 7 || 7));
+                defaultDate = nextMonday;
+                break;
+            case 'month':
+                defaultDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+                break;
+            case 'year':
+                defaultDate = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+                break;
+            default:
+                defaultDate = today;
+        }
+
+        dateInput.value = defaultDate.toISOString().split('T')[0];
+    });
+});
+</script>
+
+<?php
 
 llxFooter();
 $db->close();

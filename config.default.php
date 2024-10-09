@@ -43,4 +43,8 @@ if(is_file('../main.inc.php'))$dir = '../';
 	}
 
 	
+	// Vérification de la version PHP
+	if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+		throw new Exception('Ce module nécessite PHP version 7.0.0 ou supérieure.');
+	}
 
