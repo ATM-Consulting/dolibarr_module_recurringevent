@@ -91,7 +91,7 @@ class ActionsRecurringEvent
 		return 0;
 	}
 
-	public function formObjectActionCard(CommonObject &$object): int
+	private function formObjectActionCard(CommonObject &$object): int
 	{
 		global $langs;
 
@@ -243,10 +243,73 @@ class ActionsRecurringEvent
                 <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_end"><td colspan="2"></td></tr>
             ';
 
+		$this->addJsToUpdateCheckedBoxes($recurringEvent);
+
 		return 0;
 	}
 
-	public function formObjectExternalAccess(CommonObject &$object): int
+	private function addJsToUpdateCheckedBoxes(CommonObject $object)
+	{
+		$isModified = !empty($object->id) ? 'true' : 'false';
+
+		$this->resprints .= '<script type="text/javascript">';
+
+		$this->resprints .= <<<JS
+
+            let isModified = $isModified;
+            let elDateSelector = $('#ap');
+            let elDaysChecboxes = $('#customCheckLun, #customCheckMar, #customCheckMer, #customCheckJeu, #customCheckVen, #customCheckSam, #customCheckDim');
+            
+            const findWeekDate = (date) => {
+                date = date.split('/').reverse().join('-');
+                
+                const d = new Date(date);
+                return d.getDay();
+            }
+            
+            const checkDayBox = (findWeekDay) => {
+                
+                let days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                
+                days.forEach((day) => {
+                    let el = $('#customCheck' + day);
+                    if (el) {
+                        el.prop('checked', false);
+                    }
+                });
+                
+                let el = $('#customCheck' + days[findWeekDay]);
+                if (el) {
+                    el.prop('checked', true);
+                }
+            } 
+            
+            const handleDateSelectorChange = (event) => {
+                let weekDay = findWeekDate(event.target.value);
+                
+                checkDayBox(weekDay);
+            }
+            
+            const handleManualCheckboxChange = () => {
+                elDateSelector.off('change');
+            }
+            
+            const dynamicCheckboxesHandler = () => {
+                if(!isModified)
+                {
+                    elDateSelector.on('change', handleDateSelectorChange);
+                    elDaysChecboxes.on('change', handleManualCheckboxChange);
+                }
+            }
+            
+            $(document).ready(dynamicCheckboxesHandler);
+
+JS;
+
+		$this->resprints .= '</script>';
+	}
+
+	private function formObjectExternalAccess(CommonObject &$object): int
 	{
 		global $langs;
 
@@ -402,7 +465,6 @@ class ActionsRecurringEvent
                 <!-- FIN form récurrence -->
                 ';
 		}
-
 
 		return 0;
 	}
