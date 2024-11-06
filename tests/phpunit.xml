@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpunit
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="false"
+        beStrictAboutTestSize="true"
+        timeoutForLargeTests="10"
+        timeoutForMediumTests="5"
+        timeoutForSmallTests="2"
+        stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Recurring Events Test Suite">
+            <directory>./functionnals/</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <include>
+            <directory suffix=".php">../</directory>
+        </include>
+    </coverage>
+
+    <logging>
+        <junit outputFile="phpunit.junit.xml"/>
+    </logging>
+</phpunit>

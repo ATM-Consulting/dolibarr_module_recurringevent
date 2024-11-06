@@ -343,7 +343,9 @@ class modRecurringEvent extends DolibarrModules
 	{
 		$sql = array();
 
-		define('INC_FROM_DOLIBARR', true);
+		if (!defined('INC_FROM_DOLIBARR')) {
+			define('INC_FROM_DOLIBARR', true);
+		}
 
 		require dol_buildpath('/recurringevent/script/create-maj-base.php');
 

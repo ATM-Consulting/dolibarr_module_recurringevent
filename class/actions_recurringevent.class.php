@@ -103,7 +103,13 @@ class ActionsRecurringEvent
         $recurringEvent = new RecurringEvent($this->db);
         $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
 
-        $this->resprints = '
+		var_dump($recurringEvent->weekday_repeat);
+		while (!is_array($recurringEvent->weekday_repeat)) {
+			$recurringEvent->weekday_repeat = unserialize($recurringEvent->weekday_repeat);
+		}
+		var_dump($recurringEvent->weekday_repeat);
+
+		$this->resprints = '
                 <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_start"><td colspan="2"><strong>' . $langs->trans(
                 'RecurringEventSeparatorStart'
             ) . '</strong></td></tr>

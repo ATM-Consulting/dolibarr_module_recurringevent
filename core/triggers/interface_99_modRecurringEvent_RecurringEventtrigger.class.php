@@ -135,11 +135,10 @@ class InterfaceRecurringEventtrigger
     {
         switch ($action) {
             case 'ACTION_CREATE':
-            case 'ACTION_MODIFY':
-                if (empty($object->context['recurringevent_skip_trigger_create'])) {
-                    break;
-                }
-
+			case 'ACTION_MODIFY':
+				if (!empty($object->context['recurringevent_skip_trigger_create'])) {
+					break;
+				}
                 dol_syslog(
                     "Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
                 );
@@ -147,7 +146,7 @@ class InterfaceRecurringEventtrigger
                 // Gérer la récurrence
                 // Il faut créer une classe, qui gèrera une table d'association entre l'event Dolibarr
                 // et le paramétrage de la récurrence ... to be continued
-                if (GETPOSTISSET('is_recurrent')) {
+				if (GETPOSTISSET('is_recurrent')) {
                     if (!defined('INC_FROM_DOLIBARR')) {
                         define('INC_FROM_DOLIBARR', 1);
                     }
@@ -156,18 +155,18 @@ class InterfaceRecurringEventtrigger
                     $recurringEvent = new RecurringEvent($this->db);
                     $recurringEvent->fetchBy($object->id, 'fk_actioncomm');
 
-                    $recurringEvent->entity = $conf->entity;
+					$recurringEvent->entity = $conf->entity;
                     $recurringEvent->fk_actioncomm = $object->id;
                     $recurringEvent->frequency = GETPOST('frequency', 'int');
                     $recurringEvent->frequency_unit = GETPOST('frequency_unit');
-                    $recurringEvent->weekday_repeat = GETPOST('weekday_repeat', 'array');
+					$recurringEvent->weekday_repeat = GETPOST('weekday_repeat', 'array');
                     $recurringEvent->end_type = GETPOST('end_type');
                     $recurringEvent->end_date = $this->db->jdate(GETPOST('end_date') . ' 23:59:59');
                     $recurringEvent->end_occurrence = GETPOST('end_occurrence', 'int');
                     $recurringEvent->actioncomm_datep = $object->datep;
                     $recurringEvent->actioncomm_datef = $object->datef;
 
-                    $recurringEvent->save($user);
+					$recurringEvent->save($user);
                 } else {
                     if (!defined('INC_FROM_DOLIBARR')) {
                         define('INC_FROM_DOLIBARR', 1);

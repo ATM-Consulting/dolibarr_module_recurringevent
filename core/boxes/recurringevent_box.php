@@ -29,7 +29,7 @@ include_once DOL_DOCUMENT_ROOT . "/core/boxes/modules_boxes.php";
 class recurringeventbox extends ModeleBoxes
 {
 
-    public $boxcode = "mybox";
+	public $boxcode = "mybox";
     public $boximg = "recurringevent@recurringevent";
     public $boxlabel;
     public $depends = array("recurringevent");
@@ -76,11 +76,12 @@ class recurringeventbox extends ModeleBoxes
     /**
      * 	Method to show box
      *
-     * 	@param	array	$head       Array with properties of box title
-     * 	@param  array	$contents   Array with properties of box lines
-     * 	@return	void
+	 * @param null $head
+	 * @param null $contents
+	 * @param int $nooutput
+	 * @return    void
      */
-    public function showBox($head = null, $contents = null)
+	public function showBox($head = null, $contents = null, $nooutput = 0)
     {
         parent::showBox($this->info_box_head, $this->info_box_contents);
     }
