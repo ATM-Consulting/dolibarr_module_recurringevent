@@ -20,13 +20,36 @@ if (!class_exists('SeedObject'))
     /**
      * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
      */
-    define('INC_FROM_DOLIBARR', true);
-    require_once dirname(__FILE__).'/../config.php';
+    if (!defined('INC_FROM_DOLIBARR')) {
+        define('INC_FROM_DOLIBARR', true);
+    }
+    require_once dirname(__FILE__) . '/../config.php';
 }
 
 
 class RecurringEvent extends SeedObject
 {
+    /** @var int STATUS_CANCELED */
+    public const STATUS_CANCELED = 0;
+
+    /** @var int STATUS_PENDING */
+    public const STATUS_PENDING = 1;
+
+    /** @var int STATUS_VALIDATED */
+    public const STATUS_VALIDATED = 2;
+
+    /** @var int STATUS_ACCEPTED */
+    public const STATUS_ACCEPTED = 2;
+
+    /** @var int STATUS_REFUSED */
+    public const STATUS_REFUSED = 3;
+
+    /** @var int STATUS_CLOSED */
+    public const STATUS_CLOSED = 4;
+
+    /** @var int STATUS_DRAFT */
+    public const STATUS_DRAFT = 5;
+
     /** @var string $table_element Table name in SQL */
     public $table_element = 'recurringevent';
 
@@ -193,7 +216,7 @@ class RecurringEvent extends SeedObject
     public $frequency;
     /** @var string $frequency_unit can be 'day' || 'week' || 'month' || 'year' */
     public $frequency_unit;
-    /** @var string $weekday_repeat serialization of weekday (PHP int value) separate by comma, ex. [0,2] for Sunday and Tuesday */
+    /** @var array $weekday_repeat serialization of weekday (PHP int value) separate by comma, ex. [0,2] for Sunday and Tuesday */
     public $weekday_repeat;
     /** @var string $end_type can be 'date' || 'occurrence' */
     public $end_type;
@@ -282,11 +305,19 @@ class RecurringEvent extends SeedObject
     {
         if ($this->cleanParams() > 0)
         {
-            if($this->id > 0) return parent::create($user, $notrigger);
+            if (!is_string($this->weekday_repeat)) {
+                $this->weekday_repeat = serialize($this->weekday_repeat);
+            }
+
+            if ($this->id > 0) {
+                return parent::create($user, $notrigger);
+            }
 
             $res = parent::create($user, $notrigger);
 
-            if (empty($this->skip_generate_recurring)) $this->generateRecurring();
+            if (empty($this->skip_generate_recurring)) {
+                $this->generateRecurring();
+            }
 
             return $res;
         }
@@ -306,8 +337,6 @@ class RecurringEvent extends SeedObject
         if ($this->cleanParams() > 0)
         {
 
-//            var_dump($this->compareWithOldCopy());exit;
-
             if ($this->compareWithOldCopy() > 0)
             {
                 // Si l'event modifié fait partie d'une chaine en étant esclave, alors il devient maitre et donc indépendant
@@ -326,11 +355,7 @@ class RecurringEvent extends SeedObject
 					} else {
 						$r = $child->delete($user, $notrigger);
 					}
-
-//                    var_dump($r);exit;
                 }
-//var_dump(count($TChild));
-//                exit;
                 // TODO generate recurring
                 if (empty($this->skip_generate_recurring)) $this->generateRecurring();
 
@@ -407,10 +432,21 @@ class RecurringEvent extends SeedObject
             return -1;
         }
 
+        $actioncommMaster = new ActionComm($this->db);
+        if ($actioncommMaster->fetch($this->fk_actioncomm) <= 0) {
+            $this->error = 'RecurringEventActioncommNotFound';
+            return -1;
+        }
+
         // La répitition sur les jours de la semaine n'est valable que si la fréquence est paramétré sur la semaine
         if ($this->frequency_unit !== 'week') $this->weekday_repeat = array();
 
-        $this->frequency = (int) $this->frequency; // integer, not double
+        // Set weekday_repeat to current day if frequency_unit is week and weekday_repeat is empty
+        if ($this->frequency_unit === 'week' && empty($this->weekday_repeat)) {
+            $this->weekday_repeat = [date('w', $actioncommMaster->datep)];
+        }
+
+        $this->frequency = (int)$this->frequency; // integer, not double
 
         if ($this->end_type === 'date')
         {
@@ -501,82 +537,83 @@ class RecurringEvent extends SeedObject
 	        $delta=0;
 	        if (!empty($actioncommMaster->datef)) {
 		        $delta = $actioncommMaster->datef - $current_date;
-	        }
-
-            if ($this->frequency_unit !== 'week')
-            {
-                if ($this->end_type === 'date')
-                {
-                    while ($current_date = strtotime('+'.$this->frequency.' '.$this->frequency_unit, $current_date))
-                    {
-                        if ($current_date > $this->end_date) break;
-                        $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
-                    }
-                }
-                else
-                {
-                    $end_occurrence = $this->end_occurrence - 1; // -1, car l'event master compte pour 1
-                    while ($end_occurrence--)
-                    {
-                        $current_date = strtotime('+'.$this->frequency.' '.$this->frequency_unit, $current_date);
-                        $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
-                    }
-                }
             }
-            else
-            {
-                if (!in_array(date('w', $current_date), $this->weekday_repeat))
-                {
-                    // Besoin de modifier la date de début et fin de l'event master
-                    while ($current_date = strtotime('+1 day ', $current_date))
-                    {
-                        $weekday_index = date('w', $current_date);
-                        if (in_array($weekday_index, $this->weekday_repeat))
-                        {
-                            $actioncommMaster->datep = $current_date;
-                            if (!empty($delta)) {
-	                            $actioncommMaster->datef = $current_date + $delta;
-                            }
-                            $actioncommMaster->context['recurringevent_skip_trigger_create'] = true;
-                            $actioncommMaster->update($user, $notrigger);
-                            break;
-                        }
-                    }
-                }
 
+            // get base date as first day of week, or month, or year depending on frequency_unit
+            switch ($this->frequency_unit) {
+                case 'day':
+                    $base_date = $current_date;
+                    break;
+                case 'week':
+                    $base_date = strtotime('last sunday', $current_date);
+                    break;
+                case 'month':
+                    $base_date = strtotime('first day of this month', $current_date);
+                    break;
+                case 'year':
+                    $base_date = strtotime('first day of january this year', $current_date);
+                    break;
+            }
 
-                if ($this->end_type === 'date')
-                {
-                    while ($current_date = strtotime('+1 day ', $current_date))
-                    {
-                        if ($current_date > $this->end_date) break;
-                        $weekday_index = date('w', $current_date);
-                        if (in_array($weekday_index, $this->weekday_repeat))
-                        {
-                            $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
-                        }
+            switch ($this->end_type) {
+                case 'date':
+                    while ($base_date <= $this->end_date) {
+                        $this->createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta);
+                        $base_date = strtotime(
+                            '+' . $this->frequency . ' ' . $this->frequency_unit,
+                            $base_date
+                        );
                     }
-                }
-                else
-                {
+                    break;
+                case 'occurrence':
                     $end_occurrence = $this->end_occurrence - 1; // -1, car l'event master compte pour 1
-                    while ($end_occurrence)
-                    {
-                        $current_date = strtotime('+1 day ', $current_date);
-                        $weekday_index = date('w', $current_date);
-                        if (in_array($weekday_index, $this->weekday_repeat))
-                        {
-                            $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
-                            $end_occurrence--;
-                        }
+                    while ($end_occurrence >= 0) {
+                        $this->createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta);
+                        $base_date = strtotime('+' . $this->frequency . ' ' . $this->frequency_unit, $base_date);
+                        $end_occurrence--;
                     }
-                }
+                    break;
+                default:
+                    dol_syslog('RecurringEvent::generateRecurring - end_type not found: ' . $this->end_type, LOG_ERR);
             }
 
             return 1;
         }
 
         return -1;
+    }
+
+    private function createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta)
+    {
+        $current_date = $base_date;
+        switch ($this->frequency_unit) {
+            case 'day':
+                if ($current_date <= $actioncommMaster->datep) {
+                    break;
+                }
+                $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+                break;
+            case 'week':
+                foreach (unserialize($this->weekday_repeat) as $weekday) {
+                    $weekday = (int)$weekday;
+
+                    // get current day being first occurrence after base date
+                    $current_date = strtotime(
+                            date('Y-m-d', $base_date) . ' +' . $weekday . ' day'
+                        ) + strtotime(date('Y-m-d H:i:s', $actioncommMaster->datep)) - strtotime(
+                            date('Y-m-d', $actioncommMaster->datep)
+                        );
+                    if ($current_date <= $actioncommMaster->datep || !empty($this->end_date) && $current_date > $this->end_date && $this->end_type === 'date') {
+                        continue;
+                    }
+                    $this->createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta);
+                }
+                break;
+            case 'month':
+                break;
+            case 'year':
+                break;
+        }
     }
 
     /**

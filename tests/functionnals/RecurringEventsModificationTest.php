@@ -1,15 +1,19 @@
 <?php
 
+<<<<<<< HEAD
 require_once DOL_ROOT . '/comm/action/class/actioncomm.class.php';
 require_once DOL_ROOT . '/core/modules/modAgenda.class.php';
 require_once MODULE_ROOT . '/core/modules/modRecurringEvent.class.php';
 
 require_once __DIR__ . '/helpers/EventCreator.php';
 
+=======
+>>>>>>> 3fd79b8 (fix: recurring event creation)
 use PHPUnit\Framework\TestCase;
 
 class RecurringEventsModificationTest extends TestCase
 {
+<<<<<<< HEAD
 	private $db;
 	private $user;
 	private $original_event;
@@ -80,4 +84,7 @@ class RecurringEventsModificationTest extends TestCase
 
 		$this->assertFalse(6, $this->db->num_rows($res));
 	}
+=======
+    // TODO: Implement tests
+>>>>>>> 3fd79b8 (fix: recurring event creation)
 }
