@@ -478,7 +478,7 @@ class RecurringEvent extends SeedObject
             if (
                 $this->frequency != $object->frequency
                 || $this->frequency_unit != $object->frequency_unit
-                || array_diff($this->weekday_repeat, $object->weekday_repeat)
+				|| $this->weekday_repeat != $object->weekday_repeat
                 || $this->end_type != $object->end_type
                 || $this->end_date != $object->end_date
                 || $this->end_occurrence != $object->end_occurrence
@@ -491,22 +491,10 @@ class RecurringEvent extends SeedObject
         }
         else
         {
-//            var_dump(
-//                [$this->frequency , $this->oldcopy->frequency]
-//                , [$this->frequency_unit , $this->oldcopy->frequency_unit]
-//                , [array_diff($this->weekday_repeat, $this->oldcopy->weekday_repeat)]
-//                , [$this->end_type , $this->oldcopy->end_type]
-//                , [$this->end_date , $this->oldcopy->end_date]
-//                , [$this->end_occurrence , $this->oldcopy->end_occurrence]
-//
-//            );
-////            var_dump($this->end_date , $this->oldcopy->end_date);
-//            exit;
-
             if (
                 $this->frequency != $this->oldcopy->frequency
                 || $this->frequency_unit != $this->oldcopy->frequency_unit
-                || array_diff($this->weekday_repeat, $this->oldcopy->weekday_repeat)
+				|| $this->weekday_repeat != $this->oldcopy->weekday_repeat
                 || $this->end_type != $this->oldcopy->end_type
                 || $this->end_date != $this->oldcopy->end_date
                 || $this->end_occurrence != $this->oldcopy->end_occurrence
