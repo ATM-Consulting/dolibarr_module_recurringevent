@@ -124,8 +124,6 @@ class RecurringEventsCreationTest extends TestCase
 
 		$res = $newEvent->create($this->user);
 
-		$_POST = [];
-
 		if ($res < 0) {
 			throw new Exception(
 				'error ' . $res . ' : ' . $newEvent->error ?? $newEvent->errors[0] ?? 'Unknown error',
@@ -133,6 +131,8 @@ class RecurringEventsCreationTest extends TestCase
 				new Exception($newEvent->db->error(), 500, new Exception($newEvent->db->lastquery(), 500))
 			);
 		}
+
+		return $newEvent;
 	}
 
 	private function assertAllEventsExists(array $event)
