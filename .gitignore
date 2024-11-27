@@ -3,3 +3,5 @@
 .settings/
 *.log
 /nbproject/private/
+*/phpunit.junit.xml
+*/.phpunit.result.cache
