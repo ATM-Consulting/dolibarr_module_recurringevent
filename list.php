@@ -18,7 +18,7 @@
 require 'config.php';
 dol_include_once('recurringevent/class/recurringevent.class.php');
 
-if(empty($user->rights->recurringevent->read)) accessforbidden();
+if(!$user->hasRight('recurringevent', 'read')) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('recurringevent@recurringevent');

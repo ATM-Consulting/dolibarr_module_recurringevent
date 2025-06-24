@@ -623,7 +623,7 @@ class RecurringEvent extends SeedObject
     private function createRecurring($user, $notrigger, $actioncommMaster, $current_date, $delta)
     {
         /** @var ActionComm $ac */
-        $ac = dol_clone($actioncommMaster);
+        $ac = dol_clone($actioncommMaster, 1 );
         $ac->db = $this->db; // Reinit database connector
         $ac->id = null;
         $ac->datep = $current_date;
@@ -634,7 +634,7 @@ class RecurringEvent extends SeedObject
         $ac->create($user, $notrigger);
 
         /** @var RecurringEvent $re */
-        $re = dol_clone($this);
+        $re = dol_clone($this,1);
         $re->db = $this->db;
         $re->id = null;
         $re->fk_actioncomm = $ac->id;

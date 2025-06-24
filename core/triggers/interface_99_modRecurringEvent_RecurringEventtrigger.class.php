@@ -142,10 +142,7 @@ class InterfaceRecurringEventtrigger extends DolibarrTriggers
                 dol_syslog(
                     "Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
                 );
-                // TODO
-                // Gérer la récurrence
-                // Il faut créer une classe, qui gèrera une table d'association entre l'event Dolibarr
-                // et le paramétrage de la récurrence ... to be continued
+
                 if (GETPOSTISSET('is_recurrent')) {
                     if (!defined('INC_FROM_DOLIBARR')) {
                         define('INC_FROM_DOLIBARR', 1);
@@ -163,7 +160,7 @@ class InterfaceRecurringEventtrigger extends DolibarrTriggers
                     $recurringEvent->entity = $conf->entity;
                     $recurringEvent->fk_actioncomm = $object->id;
                     $recurringEvent->frequency = GETPOST('frequency', 'int');
-                    $recurringEvent->frequency_unit = GETPOST('frequency_unit');
+                    $recurringEvent->frequency_unit = GETPOST('frequency_unit','alpha');
                     $recurringEvent->weekday_repeat = GETPOST('weekday_repeat', 'array');
                     $recurringEvent->end_type = GETPOST('end_type');
                     $recurringEvent->end_date = $this->db->jdate(GETPOST('end_date') . ' 23:59:59');
