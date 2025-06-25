@@ -554,7 +554,7 @@ class RecurringEvent extends SeedObject
                     }
                     break;
                 case 'occurrence':
-                    $end_occurrence = $this->end_occurrence - 1; // -1, car l'event master compte pour 1
+                    $end_occurrence = $this->end_occurrence  -1;// car l'event master compte pour 1
                     while ($end_occurrence >= 0) {
                         $this->createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta);
                         $base_date = strtotime('+' . $this->frequency . ' ' . $this->frequency_unit, $base_date);

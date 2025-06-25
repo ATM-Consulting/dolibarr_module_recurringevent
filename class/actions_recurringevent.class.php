@@ -85,13 +85,13 @@ class ActionsRecurringEvent
 			case 'externalaccesspage':
 				return $this->formObjectExternalAccess($object);
 			case 'actioncard':
-				return $this->formObjectActionCard($object);
+				return $this->formObjectActionCard($object, $action);
 		}
 
 		return 0;
 	}
 
-	private function formObjectActionCard(CommonObject &$object): int
+	private function formObjectActionCard(CommonObject &$object, string $action): int
 	{
 		global $langs;
 
@@ -114,141 +114,143 @@ class ActionsRecurringEvent
 			$recurringEvent->weekday_repeat = unserialize($recurringEvent->weekday_repeat);
 		}
 
+		// On détermine si les champs doivent être désactivés en fonction de la variable $action
+		$disabled = ($action == 'edit') ? 'disabled' : '';
 		$this->resprints = '
-                <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_start"><td colspan="2"><strong>' . $langs->trans(
+    <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_start"><td colspan="2"><strong>' . $langs->trans(
 				'RecurringEventSeparatorStart'
 			) . '</strong></td></tr>
 
-                <tr id="" class="recurringevent">
-                    <td class=""><b>' . $langs->trans('RecurringEventDefineEventAsRecurrent') . '</b></td>
-                    <td id="" class="action_extras_agf_site" colspan="3">
-                        <input id="" onchange="$(\'.recurring-options\').toggleClass(\'hideobject\')" name="is_recurrent" type="checkbox" class="custom-control-input" ' . (!empty($recurringEvent->id) ? 'checked' : '') . '>
-                    </td>
-                </tr>
+    <tr id="" class="recurringevent">
+        <td class=""><b>' . $langs->trans('RecurringEventDefineEventAsRecurrent') . '</b></td>
+        <td id="" class="action_extras_agf_site" colspan="3">
+            <input id="" onchange="$(\'.recurring-options\').toggleClass(\'hideobject\')" name="is_recurrent" type="checkbox" class="custom-control-input" ' . (!empty($recurringEvent->id) ? 'checked' : '') . ' ' . $disabled . '>
+        </td>
+    </tr>
 
-                <tr id="recurringevent-select-weekday" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
-                    <td class="">' . $langs->trans('RecurringEventRepeatEventEach') . '</td>
-                    <td id="" class="action_extras_agf_site" colspan="3">
-                        <input type="number" class="form-control maxwidth50" value="' . (!empty($recurringEvent->id) ? $recurringEvent->frequency : 1) . '" name="frequency" size="4" />
-                        <select id="frequency_unit" name="frequency_unit" class="custom-select d-block w-100" onchange="if (this.value !== \'week\') { $(\'#recurring-day-of-week\').addClass(\'menuhider\'); } else { $(\'#recurring-day-of-week\').removeClass(\'menuhider\'); }">
-                            <option value="day" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'day' ? 'selected' : '') . '>' . $langs->trans(
+    <tr id="recurringevent-select-weekday" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
+        <td class="">' . $langs->trans('RecurringEventRepeatEventEach') . '</td>
+        <td id="" class="action_extras_agf_site" colspan="3">
+            <input type="number" class="form-control maxwidth50" value="' . (!empty($recurringEvent->id) ? $recurringEvent->frequency : 1) . '" name="frequency" size="4" ' . $disabled . ' />
+            <select id="frequency_unit" name="frequency_unit" class="custom-select d-block w-100" onchange="if (this.value !== \'week\') { $(\'#recurring-day-of-week\').addClass(\'menuhider\'); } else { $(\'#recurring-day-of-week\').removeClass(\'menuhider\'); }" ' . $disabled . '>
+                <option value="day" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'day' ? 'selected' : '') . '>' . $langs->trans(
 				'RecurringEventRepeatEventEachDay'
 			) . '</option>
-                            <option value="week"  ' . ((!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'week' || empty($recurringEvent->id)) ? 'selected' : '') . '>' . $langs->trans(
+                <option value="week"  ' . ((!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'week' || empty($recurringEvent->id)) ? 'selected' : '') . '>' . $langs->trans(
 				'RecurringEventRepeatEventEachWeek'
 			) . '</option>
-                            <option value="month" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? 'selected' : '') . '>' . $langs->trans(
+                <option value="month" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'month' ? 'selected' : '') . '>' . $langs->trans(
 				'RecurringEventRepeatEventEachMonth'
 			) . '</option>
-                            <option value="year" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? 'selected' : '') . '>' . $langs->trans(
+                <option value="year" ' . (!empty($recurringEvent->id) && $recurringEvent->frequency_unit == 'year' ? 'selected' : '') . '>' . $langs->trans(
 				'RecurringEventRepeatEventEachYear'
 			) . '</option>
-                        </select>
-                    </td>
-                </tr>
+            </select>
+        </td>
+    </tr>
 
-                <tr id="recurring-day-of-week" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
-                    <td class="">' . $langs->trans('RecurringEventRepeatThe') . '</td>
-                    <td id="" class="" colspan="3">
-                        <div class="pull-left minwidth100">
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+    <tr id="recurring-day-of-week" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
+        <td class="">' . $langs->trans('RecurringEventRepeatThe') . '</td>
+        <td id="" class="" colspan="3">
+            <div class="pull-left minwidth100">
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				1,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1">
-                                <label class="custom-control-label" for="customCheckLun">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckLun" name="weekday_repeat[]" value="1" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckLun">' . $langs->trans(
 				'RecurringEventMondayShort'
 			) . '</label>
-                            </div>
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+                </div>
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				2,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2">
-                                <label class="custom-control-label" for="customCheckMar">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckMar" name="weekday_repeat[]" value="2" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckMar">' . $langs->trans(
 				'RecurringEventTuesdayShort'
 			) . '</label>
-                            </div>
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+                </div>
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				3,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3">
-                                <label class="custom-control-label" for="customCheckMer">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckMer" name="weekday_repeat[]" value="3" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckMer">' . $langs->trans(
 				'RecurringEventWednesdayShort'
 			) . '</label>
-                            </div>
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+                </div>
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				4,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4">
-                                <label class="custom-control-label" for="customCheckJeu">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckJeu" name="weekday_repeat[]" value="4" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckJeu">' . $langs->trans(
 				'RecurringEventThursdayShort'
 			) . '</label>
-                            </div>
-                        </div>
+                </div>
+            </div>
 
-                        <div class="pull-left minwidth100">
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+            <div class="pull-left minwidth100">
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				5,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5">
-                                <label class="custom-control-label" for="customCheckVen">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckVen" name="weekday_repeat[]" value="5" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckVen">' . $langs->trans(
 				'RecurringEventFridayShort'
 			) . '</label>
-                            </div>
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+                </div>
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				6,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6">
-                                <label class="custom-control-label" for="customCheckSam">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckSam" name="weekday_repeat[]" value="6" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckSam">' . $langs->trans(
 				'RecurringEventSaturdayShort'
 			) . '</label>
-                            </div>
-                            <div class="form-check custom-control custom-checkbox">
-                                <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
+                </div>
+                <div class="form-check custom-control custom-checkbox">
+                    <input type="checkbox" ' . (!empty($recurringEvent->id) && in_array(
 				0,
 				$recurringEvent->weekday_repeat
-			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0">
-                                <label class="custom-control-label" for="customCheckDim">' . $langs->trans(
+			) ? 'checked' : '') . ' class="custom-control-input" id="customCheckDim" name="weekday_repeat[]" value="0" ' . $disabled . '>
+                    <label class="custom-control-label" for="customCheckDim">' . $langs->trans(
 				'RecurringEventSundayShort'
 			) . '</label>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                </div>
+            </div>
+        </td>
+    </tr>
 
-                <tr id="" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
-                    <td class="">' . $langs->trans('RecurringEventFinishAt') . '</td>
-                    <td id="" class="action_extras_agf_site" colspan="3">
-                        <div class="col-sm-10 ">
-                            <div class="form-inline mb-3">
-                                <input class="form-check-input" type="radio" name="end_type" id="end_type_date" value="date" ' . ((!empty($recurringEvent->id) && $recurringEvent->end_type == 'date' || empty($recurringEvent->id)) ? 'checked' : '') . '>
-                                <label class="form-check-label" for="end_type_date">
-                                ' . $langs->trans('RecurringEventThe') . '
-                                </label>
-                                <input type="date" class="form-control ml-2" name="end_date" ' . ((!empty($recurringEvent->id) && !empty($recurringEvent->end_date)) ? 'value="' . date(
+    <tr id="" class="recurringevent recurring-options ' . (!empty($recurringEvent->id) ? '' : 'hideobject') . '">
+        <td class="">' . $langs->trans('RecurringEventFinishAt') . '</td>
+        <td id="" class="action_extras_agf_site" colspan="3">
+            <div class="col-sm-10 ">
+                <div class="form-inline mb-3">
+                    <input class="form-check-input" type="radio" name="end_type" id="end_type_date" value="date" ' . ((!empty($recurringEvent->id) && $recurringEvent->end_type == 'date' || empty($recurringEvent->id)) ? 'checked' : '') . ' ' . $disabled . '>
+                    <label class="form-check-label" for="end_type_date">
+                    ' . $langs->trans('RecurringEventThe') . '
+                    </label>
+                    <input type="date" class="form-control ml-2" name="end_date" ' . ((!empty($recurringEvent->id) && !empty($recurringEvent->end_date)) ? 'value="' . date(
 					'Y-m-d',
 					$recurringEvent->end_date
-				) . '"' : '') . ' onchange="$(\'#end_type_date\').prop(\'checked\', true)" />
-                            </div>
-                            <div class="form-inline">
-                                <input class="form-check-input" type="radio" name="end_type" id="end_type_occurrence" value="occurrence" ' . (!empty($recurringEvent->id) && $recurringEvent->end_type == 'occurrence' ? 'checked' : '') . '>
-                                <label class="form-check-label" for="end_type_occurrence">
-                                ' . $langs->trans('RecurringEventAfter') . '
-                                </label>
-                                <input type="number" class="form-control mx-2 col-2 maxwidth50" size="2" placehoder="5" name="end_occurrence" value="' . (!empty($recurringEvent->id) ? $recurringEvent->end_occurrence : '') . '" onchange="$(\'#end_type_occurrence\').prop(\'checked\', true)" />
-                                ' . $langs->trans('RecurringEventoccurrences') . '
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+				) . '"' : '') . ' onchange="$(\'#end_type_date\').prop(\'checked\', true)" ' . $disabled . ' />
+                </div>
+                <div class="form-inline">
+                    <input class="form-check-input" type="radio" name="end_type" id="end_type_occurrence" value="occurrence" ' . (!empty($recurringEvent->id) && $recurringEvent->end_type == 'occurrence' ? 'checked' : '') . ' ' . $disabled . '>
+                    <label class="form-check-label" for="end_type_occurrence">
+                    ' . $langs->trans('RecurringEventAfter') . '
+                    </label>
+                    <input type="number" class="form-control mx-2 col-2 maxwidth50" size="2" placehoder="5" name="end_occurrence" value="' . (!empty($recurringEvent->id) ? $recurringEvent->end_occurrence : '') . '" onchange="$(\'#end_type_occurrence\').prop(\'checked\', true)" ' . $disabled . ' />
+                    ' . $langs->trans('RecurringEventoccurrences') . '
+                </div>
+            </div>
+        </td>
+    </tr>
 
-                <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_end"><td colspan="2"></td></tr>
-            ';
+    <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_end"><td colspan="2"></td></tr>
+';
 
 		$this->addJsToUpdateCheckedBoxes($recurringEvent);
 
