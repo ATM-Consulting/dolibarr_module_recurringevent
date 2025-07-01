@@ -115,7 +115,7 @@ class ActionsRecurringEvent
 		}
 
 		// On détermine si les champs doivent être désactivés en fonction de la variable $action
-		$disabled = ($action == 'edit') ? 'disabled' : '';
+		$disabled = ($action == 'edit') ? 'readonly' : '';
 		$this->resprints = '
     <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_start"><td colspan="2"><strong>' . $langs->trans(
 				'RecurringEventSeparatorStart'
