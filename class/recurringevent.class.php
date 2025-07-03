@@ -344,21 +344,24 @@ class RecurringEvent extends SeedObject
 
 
                 $res = parent::update($user, $notrigger);
+				$updateMode = GETPOST('action', 'alpha');
+				if ($updateMode != 'update') {
 
-                // Diff found !
-                // TODO delete Actioncomm
-                $TChild = $this->getAllChainFromMaster();
-                foreach ($TChild as $child)
-                {
-					if((int) DOL_VERSION < 20) {
-						$r = $child->delete($notrigger);
-					} else {
-						$r = $child->delete($user, $notrigger);
+
+					// Diff found !
+					// TODO delete Actioncomm
+					$TChild = $this->getAllChainFromMaster();
+					foreach ($TChild as $child) {
+						if ((int)DOL_VERSION < 20) {
+							$r = $child->delete($notrigger);
+						} else {
+							$r = $child->delete($user, $notrigger);
+						}
 					}
-                }
-                // TODO generate recurring
-                if (empty($this->skip_generate_recurring)) $this->generateRecurring();
 
+					// TODO generate recurring
+					if (empty($this->skip_generate_recurring)) $this->generateRecurring();
+				}
                 return $res;
             }
 
@@ -375,7 +378,7 @@ class RecurringEvent extends SeedObject
      */
     public function delete(User &$user, $notrigger = false)
     {
-        // TODO passer des param supplémentaire pour s'il ne faut delete que l'objet courant et conserver les events suivant (attention : penser au transfert de master)
+        // TODO passer des param supplémentaire s'il ne faut delete que l'objet courant et conserver les events suivant (attention : penser au transfert de master)
         $TChild = $this->getAllChainFromMaster();
         foreach ($TChild as $child)
         {

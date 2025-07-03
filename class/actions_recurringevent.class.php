@@ -114,8 +114,41 @@ class ActionsRecurringEvent
 			$recurringEvent->weekday_repeat = unserialize($recurringEvent->weekday_repeat);
 		}
 
+
 		// On détermine si les champs doivent être désactivés en fonction de la variable $action
-		$disabled = ($action == 'edit') ? 'readonly' : '';
+		$disabled = ($action == 'edit') ? 'disabled' : '';
+
+		// On prépare une variable pour contenir les champs cachés si nécessaire
+		$hiddenFields = '';
+
+		// Si on est en mode édition, on génère les champs cachés pour chaque donnée existante
+		// afin qu'elles soient postées même si les champs visibles sont désactivés.
+		if ($action == 'edit' && !empty($recurringEvent->id)) {
+			// Champ pour l'état "récurrent"
+			$hiddenFields .= '<input type="hidden" name="is_recurrent" value="on">';
+
+			// Fréquence et unité
+			$hiddenFields .= '<input type="hidden" name="frequency" value="' . $recurringEvent->frequency . '">';
+			$hiddenFields .= '<input type="hidden" name="frequency_unit" value="' . $recurringEvent->frequency_unit . '">';
+
+			// Jours de la semaine (boucle sur les valeurs existantes)
+			if (!empty($recurringEvent->weekday_repeat)) {
+				foreach ($recurringEvent->weekday_repeat as $dayValue) {
+					$hiddenFields .= '<input type="hidden" name="weekday_repeat[]" value="' . $dayValue . '">';
+				}
+			}
+
+			// Type de fin et valeurs associées
+			$hiddenFields .= '<input type="hidden" name="end_type" value="' . $recurringEvent->end_type . '">';
+			if (!empty($recurringEvent->end_date)) {
+				$hiddenFields .= '<input type="hidden" name="end_date" value="' . date('Y-m-d', $recurringEvent->end_date) . '">';
+			}
+			if (!empty($recurringEvent->end_occurrence)) {
+				$hiddenFields .= '<input type="hidden" name="end_occurrence" value="' . $recurringEvent->end_occurrence . '">';
+			}
+		}
+
+
 		$this->resprints = '
     <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_start"><td colspan="2"><strong>' . $langs->trans(
 				'RecurringEventSeparatorStart'
@@ -125,6 +158,7 @@ class ActionsRecurringEvent
         <td class=""><b>' . $langs->trans('RecurringEventDefineEventAsRecurrent') . '</b></td>
         <td id="" class="action_extras_agf_site" colspan="3">
             <input id="" onchange="$(\'.recurring-options\').toggleClass(\'hideobject\')" name="is_recurrent" type="checkbox" class="custom-control-input" ' . (!empty($recurringEvent->id) ? 'checked' : '') . ' ' . $disabled . '>
+            ' . $hiddenFields . '
         </td>
     </tr>
 
@@ -251,6 +285,7 @@ class ActionsRecurringEvent
 
     <tr class="trextrafieldseparator trextrafieldseparator_recurringevent_end"><td colspan="2"></td></tr>
 ';
+
 
 		$this->addJsToUpdateCheckedBoxes($recurringEvent);
 
