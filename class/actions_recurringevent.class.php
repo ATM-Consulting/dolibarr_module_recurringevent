@@ -18,8 +18,8 @@
 /**
  * \file    class/actions_recurringevent.class.php
  * \ingroup recurringevent
- * \brief   This file is an example hook overload class file
- *          Put some comments here
+ * \brief   This file is an example hook overload class file.
+ * Description of the ActionsRecurringEvent class.
  */
 
 /**
@@ -33,12 +33,12 @@ class ActionsRecurringEvent
 	public $db;
 
 	/**
-	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse
+	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse.
 	 */
 	public $results = array();
 
 	/**
-	 * @var string String displayed by executeHook() immediately after return
+	 * @var string String displayed by executeHook() immediately after return.
 	 */
 	public $resprints;
 
@@ -57,13 +57,13 @@ class ActionsRecurringEvent
 	}
 
 	/**
-	 * Overloading the doActions function : replacing the parent's function with the one below
+	 * Overloading the doActions function: replacing the parent's function with the one below.
 	 *
-	 * @param array()         $parameters     Hook metadatas (context, etc...)
-	 * @param CommonObject $object The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
-	 * @param string $action Current action (if set). Generally create or edit or null
-	 * @param HookManager $hookmanager Hook manager propagated to allow calling another hook
-	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
+	 * @param array        $parameters     Hook metadatas (context, etc...)
+	 * @param CommonObject $object         The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+	 * @param string       $action         Current action (if set). Generally create, edit or null.
+	 * @param HookManager  $hookmanager    Hook manager propagated to allow calling another hook.
+	 * @return  int                        < 0 on error, 0 on success, 1 to replace standard code.
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
@@ -71,13 +71,13 @@ class ActionsRecurringEvent
 	}
 
 	/**
-	 * Overloading the doActions function : replacing the parent's function with the one below
+	 * Overloading the formObjectOptions function: replacing the parent's function with the one below.
 	 *
-	 * @param array()         $parameters     Hook metadatas (context, etc...)
-	 * @param CommonObject $object The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
-	 * @param string $action Current action (if set). Generally create or edit or null
-	 * @param HookManager $hookmanager Hook manager propagated to allow calling another hook
-	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
+	 * @param array        $parameters     Hook metadatas (context, etc...)
+	 * @param CommonObject $object         The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+	 * @param string       $action         Current action (if set). Generally create, edit or null.
+	 * @param HookManager  $hookmanager    Hook manager propagated to allow calling another hook.
+	 * @return  int                        < 0 on error, 0 on success, 1 to replace standard code.
 	 */
 	public function formObjectOptions($parameters, &$object, &$action, $hookmanager)
 	{
@@ -110,35 +110,54 @@ class ActionsRecurringEvent
 			return $res;
 		}
 
+
+
+		$msgScrum = empty($recurringEvent->fk_actioncomm_master) ?   $langs->trans("RecMasterUpdate") : $langs->trans("RecSlaveUpdate");
+		// Make sure we are on the object's create or edit form
+		if (in_array($action, ['edit'])) {
+			if (isset($object->type_code) && strpos($object->type_code, 'SCRUM_') === 0) {
+				print '<script type="text/javascript">';
+				print "$(document).ready(function() {";
+				print "  var message_div = '<tr><td colspan=\"4\"><div class=\"infobox\">"  . addslashes($msgScrum) .  "</div></td></tr>';";
+				print "  $(\".titlefieldcreate:first\").closest('tr').before(message_div);";
+				print "});";
+				print '</script>';
+			}
+		}
+
+
+
+
+
 		while (!is_array($recurringEvent->weekday_repeat)) {
 			$recurringEvent->weekday_repeat = unserialize($recurringEvent->weekday_repeat);
 		}
 
 
-		// On détermine si les champs doivent être désactivés en fonction de la variable $action
+		// Determine if the fields should be disabled based on the $action variable
 		$disabled = ($action == 'edit') ? 'disabled' : '';
 
-		// On prépare une variable pour contenir les champs cachés si nécessaire
+		// Prepare a variable to hold hidden fields if necessary
 		$hiddenFields = '';
 
-		// Si on est en mode édition, on génère les champs cachés pour chaque donnée existante
-		// afin qu'elles soient postées même si les champs visibles sont désactivés.
+		// If in edit mode, generate hidden fields for each existing data
+		// so they are posted even if the visible fields are disabled.
 		if ($action == 'edit' && !empty($recurringEvent->id)) {
-			// Champ pour l'état "récurrent"
+			// Field for "recurrent" state
 			$hiddenFields .= '<input type="hidden" name="is_recurrent" value="on">';
 
-			// Fréquence et unité
+			// Frequency and unit
 			$hiddenFields .= '<input type="hidden" name="frequency" value="' . $recurringEvent->frequency . '">';
 			$hiddenFields .= '<input type="hidden" name="frequency_unit" value="' . $recurringEvent->frequency_unit . '">';
 
-			// Jours de la semaine (boucle sur les valeurs existantes)
+			// Days of the week (loop over existing values)
 			if (!empty($recurringEvent->weekday_repeat)) {
 				foreach ($recurringEvent->weekday_repeat as $dayValue) {
 					$hiddenFields .= '<input type="hidden" name="weekday_repeat[]" value="' . $dayValue . '">';
 				}
 			}
 
-			// Type de fin et valeurs associées
+			// End type and associated values
 			$hiddenFields .= '<input type="hidden" name="end_type" value="' . $recurringEvent->end_type . '">';
 			if (!empty($recurringEvent->end_date)) {
 				$hiddenFields .= '<input type="hidden" name="end_date" value="' . date('Y-m-d', $recurringEvent->end_date) . '">';
@@ -325,7 +344,7 @@ class ActionsRecurringEvent
 			}
 
 			$this->resprints = '
-                <!-- DEBUT form récurrence : ceci devrait être externalisé dans un module puis remplacé par l\'appel d\'un hook -->
+                <!-- START recurrence form: this should be externalized in a module and then replaced by a hook call -->
                 <div class="form-row my-3">
                     <div class="custom-control custom-checkbox">
                         <input onchange="$(\'#recurring-options\').toggleClass(\'d-block\')" id="toggle-recurrence" name="is_recurrent" type="checkbox" class="custom-control-input" ' . (!empty($recurringEvent->id) ? 'checked' : '') . '>
@@ -463,7 +482,7 @@ class ActionsRecurringEvent
                     </fieldset>
 
                 </div>
-                <!-- FIN form récurrence -->
+                <!-- END recurrence form -->
                 ';
 		}
 

@@ -36,4 +36,5 @@ RecurringEventThursdayShort=Jeu.
 RecurringEventFridayShort=Ven.
 RecurringEventSaturdayShort=Sam.
 RecurringEventSundayShort=Dim.
-
+RecMasterUpdate=Attention, vous modifiez l'élément principal. Tout changement effectué ici sera également appliqué à l'ensemble des éléments enfants dépendants.
+RecSlaveUpdate=Les changements apportés ne concerneront que l'élément en cours de modification et n'auront aucun impact sur l'élément maître ou les autres éléments enfants.

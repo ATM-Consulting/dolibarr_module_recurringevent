@@ -334,34 +334,25 @@ class RecurringEvent extends SeedObject
      */
     public function update(User &$user, $notrigger = false)
     {
-        if ($this->cleanParams() > 0)
-        {
+
+		//var_dump('here');exit();
+		if ($this->cleanParams() > 0) {
 
             if ($this->compareWithOldCopy() > 0)
             {
-                // Si l'event modifié fait partie d'une chaine en étant esclave, alors il devient maitre et donc indépendant
-                if (!empty($this->fk_actioncomm_master)) $this->fk_actioncomm_master = 0;
-
-
                 $res = parent::update($user, $notrigger);
-				$updateMode = GETPOST('action', 'alpha');
-				if ($updateMode != 'update') {
-
-
-					// Diff found !
-					// TODO delete Actioncomm
-					$TChild = $this->getAllChainFromMaster();
-					foreach ($TChild as $child) {
-						if ((int)DOL_VERSION < 20) {
-							$r = $child->delete($notrigger);
-						} else {
-							$r = $child->delete($user, $notrigger);
+					// l'element est le master de la serie
+					if ($this->fk_actioncomm_master == 0) {
+						$TChild = $this->getAllChainFromMaster();
+						foreach ($TChild as $child) {
+							if ((int)DOL_VERSION < 20) {
+								$r = $child->delete($notrigger);
+							} else {
+								$r = $child->delete($user, $notrigger);
+							}
 						}
+						if (empty($this->skip_generate_recurring)) $this->generateRecurring();
 					}
-
-					// TODO generate recurring
-					if (empty($this->skip_generate_recurring)) $this->generateRecurring();
-				}
                 return $res;
             }
 
@@ -370,6 +361,8 @@ class RecurringEvent extends SeedObject
 
         return -1;
     }
+
+
 
     /**
      * @param 	User 	$user 		User object
@@ -423,6 +416,13 @@ class RecurringEvent extends SeedObject
 
         return $TChild;
     }
+
+	/**
+	 * Gets all child ActionComm objects for a given master ActionComm ID.
+	 * @param int $master_actioncomm_id The ID of the master ActionComm.
+	 * @return ActionComm[]
+	 */
+
 
     /**
      * @return int 1 if OK, -1 if KO
