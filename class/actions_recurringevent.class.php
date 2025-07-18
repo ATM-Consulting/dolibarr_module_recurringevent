@@ -91,6 +91,10 @@ class ActionsRecurringEvent
 		return 0;
 	}
 
+	/**
+	 * @param CommonObject $object
+	 * @return void
+	 */
 	private function addJsToUpdateCheckedBoxes(CommonObject $object)
 	{
 		$isModified = !empty($object->id) ? 'true' : 'false';

@@ -40,7 +40,7 @@ const initCheckboxSelector = () => {
     };
 
     const dynamicCheckboxesHandler = () => {
-        if (!isModified) {
+
             elDateSelector.addEventListener('input', handleDateSelectorChange);
             elDateSection.addEventListener('click', handleDateSelectorChange);
             elDaysCheckboxes.addEventListener('input', handleManualCheckboxChange);
@@ -48,7 +48,7 @@ const initCheckboxSelector = () => {
             // Bind to jQuery datepicker change event
             $(elDateSelector).on('input', handleDateSelectorChange);
             $(elDateSelector).on('input', handleDateSelectorChange);
-        }
+
     };
 
     document.addEventListener('DOMContentLoaded', dynamicCheckboxesHandler);
