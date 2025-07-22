@@ -43,11 +43,10 @@ const initCheckboxSelector = () => {
 
             elDateSelector.addEventListener('input', handleDateSelectorChange);
             elDateSection.addEventListener('click', handleDateSelectorChange);
-            elDaysCheckboxes.addEventListener('input', handleManualCheckboxChange);
 
             // Bind to jQuery datepicker change event
-            $(elDateSelector).on('input', handleDateSelectorChange);
-            $(elDateSelector).on('input', handleDateSelectorChange);
+           // $(elDateSelector).on('input', handleDateSelectorChange);
+          //  $(elDateSelector).on('input', handleDateSelectorChange);
 
     };
 

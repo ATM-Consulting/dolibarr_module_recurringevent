@@ -29,27 +29,6 @@ if (!class_exists('SeedObject'))
 
 class RecurringEvent extends SeedObject
 {
-    /** @var int STATUS_CANCELED */
-    public const STATUS_CANCELED = 0;
-
-    /** @var int STATUS_PENDING */
-    public const STATUS_PENDING = 1;
-
-    /** @var int STATUS_VALIDATED */
-    public const STATUS_VALIDATED = 2;
-
-    /** @var int STATUS_ACCEPTED */
-    public const STATUS_ACCEPTED = 2;
-
-    /** @var int STATUS_REFUSED */
-    public const STATUS_REFUSED = 3;
-
-    /** @var int STATUS_CLOSED */
-    public const STATUS_CLOSED = 4;
-
-    /** @var int STATUS_DRAFT */
-    public const STATUS_DRAFT = 5;
-
     /** @var string $table_element Table name in SQL */
     public $table_element = 'recurringevent';
 
@@ -582,7 +561,7 @@ class RecurringEvent extends SeedObject
 	 * @param int $delta event duration in seconds
 	 * @return void
 	 */
-    private function createRecurringsForPeriod($user, $notrigger, $actioncommMaster, $base_date, $delta)
+    private function createRecurringsForPeriod(User $user, bool $notrigger, ActionComm $actioncommMaster, int $base_date, int $delta): void
     {
         $current_date = $base_date;
         switch ($this->frequency_unit) {

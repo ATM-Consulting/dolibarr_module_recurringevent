@@ -124,7 +124,7 @@ class ActionsRecurringEvent
 				}
 
 		// 2. Handle context-specific JS (message for SCRUM)
-				if ($action === 'edit' && isset($object->type_code) && strpos($object->type_code, 'SCRUM_') === 0) {
+				if ($action === 'edit') {
 					$msgScrum = empty($recurringEvent->fk_actioncomm_master) ? $langs->trans("RecMasterUpdate") : $langs->trans("RecSlaveUpdate");
 					print '<script type="text/javascript">';
 					print "$(document).ready(function() {";
