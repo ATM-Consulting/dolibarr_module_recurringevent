@@ -21,8 +21,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 dol_include_once('recurringevent/class/recurringevent.class.php');
 dol_include_once('recurringevent/lib/recurringevent.lib.php');
 
-if(empty($user->rights->recurringevent->read)) accessforbidden();
-$permissiondellink = $user->rights->webhost->write;	// Used by the include of actions_dellink.inc.php
+if(!$user->hasRight('recurringevent', 'read')) accessforbidden();
+$permissiondellink = $user->hasRight('webhost', 'write');	// Used by the include of actions_dellink.inc.php
 
 $langs->load('recurringevent@recurringevent');
 
@@ -158,17 +158,17 @@ if (empty($reshook))
 
 		case 'modif':
 		case 'reopen':
-			if (!empty($user->rights->recurringevent->write)) $object->setDraft($user);
+			if ($user->hasRight('recurringevent', 'write')) $object->setDraft($user);
 				
 			break;
 		case 'confirm_validate':
-			if (!empty($user->rights->recurringevent->write)) $object->setValid($user);
+			if ($user->hasRight('recurringevent', 'write')) $object->setValid($user);
 			
 			header('Location: '.dol_buildpath('/recurringevent/card.php', 1).'?id='.$object->id);
 			exit;
 
 		case 'confirm_delete':
-			if (!empty($user->rights->recurringevent->delete)) $object->delete($user);
+			if ($user->hasRight('recurringevent', 'delete')) $object->delete($user);
 			
 			header('Location: '.dol_buildpath('/recurringevent/list.php', 1));
 			exit;
@@ -318,7 +318,7 @@ else
                 //        print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
 
                 // Modify
-                if (!empty($user->rights->recurringevent->write))
+                if ($user->hasRight('recurringevent', 'write'))
                 {
                     if ($object->status !== RecurringEvent::STATUS_CANCELED)
                     {
@@ -366,7 +366,7 @@ else
                     if ($object->status === RecurringEvent::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("RecurringEventCancel").'</a></div>'."\n";
                 }
 
-                if (!empty($user->rights->recurringevent->delete))
+                if ($user->hasRight('recurringevent', 'delete'))
                 {
                     print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=delete">'.$langs->trans("RecurringEventDelete").'</a></div>'."\n";
                 }

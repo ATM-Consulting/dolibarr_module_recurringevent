@@ -97,37 +97,37 @@ function getFormConfirmRecurringEvent($form, $object, $action)
 
     $formconfirm = '';
 
-    if ($action === 'valid' && !empty($user->rights->recurringevent->write))
+    if ($action === 'valid' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmValidateRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateRecurringEventTitle'), $body, 'confirm_validate', '', 0, 1);
     }
-    elseif ($action === 'accept' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'accept' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmAcceptRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptRecurringEventTitle'), $body, 'confirm_accept', '', 0, 1);
     }
-    elseif ($action === 'refuse' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'refuse' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmRefuseRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmRefuseRecurringEventTitle'), $body, 'confirm_refuse', '', 0, 1);
     }
-    elseif ($action === 'reopen' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'reopen' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmReopenRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopenRecurringEventTitle'), $body, 'confirm_refuse', '', 0, 1);
     }
-    elseif ($action === 'delete' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'delete' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmDeleteRecurringEventBody');
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeleteRecurringEventTitle'), $body, 'confirm_delete', '', 0, 1);
     }
-    elseif ($action === 'clone' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'clone' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmCloneRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloneRecurringEventTitle'), $body, 'confirm_clone', '', 0, 1);
     }
-    elseif ($action === 'cancel' && !empty($user->rights->recurringevent->write))
+    elseif ($action === 'cancel' && $user->hasRight('recurringevent', 'write'))
     {
         $body = $langs->trans('ConfirmCancelRecurringEventBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCancelRecurringEventTitle'), $body, 'confirm_cancel', '', 0, 1);

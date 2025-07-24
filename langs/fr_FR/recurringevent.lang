@@ -36,4 +36,5 @@ RecurringEventThursdayShort=Jeu.
 RecurringEventFridayShort=Ven.
 RecurringEventSaturdayShort=Sam.
 RecurringEventSundayShort=Dim.
-
+RecMasterUpdate=En modifiant cet événement, vous mettez à jour le modèle de récurrence. Les changements seront propagés à toutes les tâches enfants qui en dépendent.
+RecSlaveUpdate=Les modifications apportées n'affecteront que cette occurrence spécifique, sans altérer l'événement récurrent principal ni les autres occurrences.
