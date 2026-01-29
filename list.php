@@ -18,7 +18,7 @@
 require 'config.php';
 dol_include_once('recurringevent/class/recurringevent.class.php');
 
-if(!$user->hasRight('recurringevent', 'read')) accessforbidden();
+if (!$user->hasRight('recurringevent', 'read')) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('recurringevent@recurringevent');
@@ -32,10 +32,9 @@ $object = new RecurringEvent($db);
 
 $hookmanager->initHooks(array('recurringeventlist'));
 
-if ($object->isextrafieldmanaged)
-{
-    $extrafields = new ExtraFields($db);
-    $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
+if ($object->isextrafieldmanaged) {
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
 }
 
 /*
@@ -46,15 +45,13 @@ $parameters=array();
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend')
-{
-    $massaction = '';
+if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+	$massaction = '';
 }
 
 
-if (empty($reshook))
-{
-	// do action from GETPOST ... 
+if (empty($reshook)) {
+	// do action from GETPOST ...
 }
 
 
@@ -65,15 +62,14 @@ if (empty($reshook))
 llxHeader('', $langs->trans('RecurringEventList'), '', '');
 
 //$type = GETPOST('type');
-//if (empty($user->rights->recurringevent->all->read)) $type = 'mine';
+//if (empty($user->hasRight('recurringevent', 'all', 'read'))) $type = 'mine';
 
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
-if (!empty($object->isextrafieldmanaged))
-{
-    $keys = array_keys($extralabels);
-	if(!empty($keys)) {
+if (!empty($object->isextrafieldmanaged)) {
+	$keys = array_keys($extralabels);
+	if (!empty($keys)) {
 		$fieldList .= ', et.' . implode(', et.', $keys);
 	}
 }
@@ -87,9 +83,8 @@ $sql.=$hookmanager->resPrint;
 
 $sql.= ' FROM '.MAIN_DB_PREFIX.'recurringevent t ';
 
-if (!empty($object->isextrafieldmanaged))
-{
-    $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'recurringevent_extrafields et ON (et.fk_object = t.rowid)';
+if (!empty($object->isextrafieldmanaged)) {
+	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'recurringevent_extrafields et ON (et.fk_object = t.rowid)';
 }
 
 $sql.= ' WHERE 1=1';
@@ -109,22 +104,22 @@ if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user
 $r = new Listview($db, 'recurringevent');
 echo $r->render($sql, array(
 	'view_type' => 'list' // default = [list], [raw], [chart]
-    ,'allow-fields-select' => true
+	,'allow-fields-select' => true
 	,'limit'=>array(
 		'nbLine' => $nbLine
 	)
-    ,'list' => array(
-        'title' => $langs->trans('RecurringEventList')
-        ,'image' => 'title_generic.png'
-        ,'picto_precedent' => '<'
-        ,'picto_suivant' => '>'
-        ,'noheader' => 0
-        ,'messageNothing' => $langs->trans('NoRecurringEvent')
-        ,'picto_search' => img_picto('', 'search.png', '', 0)
-        ,'massactions'=>array(
-            'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
-        )
-    )
+	,'list' => array(
+		'title' => $langs->trans('RecurringEventList')
+		,'image' => 'title_generic.png'
+		,'picto_precedent' => '<'
+		,'picto_suivant' => '>'
+		,'noheader' => 0
+		,'messageNothing' => $langs->trans('NoRecurringEvent')
+		,'picto_search' => img_picto('', 'search.png', '', 0)
+		,'massactions'=>array(
+			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
+		)
+	)
 	,'subQuery' => array()
 	,'link' => array()
 	,'type' => array(
@@ -165,7 +160,12 @@ llxFooter('');
 $db->close();
 
 /**
- * TODO remove if unused
+ * Get the NomUrl of a Recurring Event object
+ *
+ * @param   int     $id     ID of the object
+ * @param   string  $ref    Reference of the object
+ * @return  string          HTML link of the object or empty string
+ * @todo                    Remove if unused
  */
 function _getObjectNomUrl($id, $ref)
 {
@@ -173,24 +173,25 @@ function _getObjectNomUrl($id, $ref)
 
 	$o = new RecurringEvent($db);
 	$res = $o->fetch($id, false, $ref);
-	if ($res > 0)
-	{
+	if ($res > 0) {
 		return $o->getNomUrl(1);
 	}
 
 	return '';
 }
-
 /**
- * TODO remove if unused
+ * Get the NomUrl of a User
+ *
+ * @param   int     $fk_user    ID of the user
+ * @return  string              HTML link of the user or empty string
+ * @todo                        Remove if unused
  */
 function _getUserNomUrl($fk_user)
 {
 	global $db;
 
 	$u = new User($db);
-	if ($u->fetch($fk_user) > 0)
-	{
+	if ($u->fetch($fk_user) > 0) {
 		return $u->getNomUrl(1);
 	}
 
