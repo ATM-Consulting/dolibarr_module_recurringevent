@@ -33,7 +33,7 @@ $o=new RecurringEvent($db);
 $o->init_db_by_vars();
 
 // Ensure extrafields support table exists (required by admin extrafields page).
-$sqlCreateExtrafields = "CREATE TABLE IF NOT EXISTS ".MAIN_DB_PREFIX."recurringevent_extrafields (";
+$sqlCreateExtrafields = "CREATE TABLE IF NOT EXISTS ".$db->prefix()."recurringevent_extrafields (";
 $sqlCreateExtrafields .= " rowid integer AUTO_INCREMENT PRIMARY KEY,";
 $sqlCreateExtrafields .= " tms timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,";
 $sqlCreateExtrafields .= " fk_object integer NOT NULL,";
