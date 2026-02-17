@@ -31,3 +31,16 @@ dol_include_once('/recurringevent/class/recurringevent.class.php');
 
 $o=new RecurringEvent($db);
 $o->init_db_by_vars();
+
+// Ensure extrafields support table exists (required by admin extrafields page).
+$sqlCreateExtrafields = "CREATE TABLE IF NOT EXISTS ".MAIN_DB_PREFIX."recurringevent_extrafields (";
+$sqlCreateExtrafields .= " rowid integer AUTO_INCREMENT PRIMARY KEY,";
+$sqlCreateExtrafields .= " tms timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,";
+$sqlCreateExtrafields .= " fk_object integer NOT NULL,";
+$sqlCreateExtrafields .= " import_key varchar(14) DEFAULT NULL";
+$sqlCreateExtrafields .= ") ENGINE=innodb";
+
+$resql = $db->query($sqlCreateExtrafields);
+if (!$resql) {
+	dol_syslog(__FILE__ . " failed to create recurringevent_extrafields table: " . $db->lasterror(), LOG_ERR);
+}
